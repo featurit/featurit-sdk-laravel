@@ -7,7 +7,7 @@ use Featurit\Client\Modules\Segmentation\FeaturitUserContext;
 use Featurit\Client\Modules\Segmentation\FeaturitUserContextProvider;
 use Illuminate\Support\Facades\Auth;
 
-class LaravelFeaturitContextProvider implements FeaturitUserContextProvider
+class LaravelFeaturitUserContextProvider implements FeaturitUserContextProvider
 {
     public function getUserContext(): FeaturitUserContext
     {
