@@ -31,11 +31,13 @@ class FeaturitServiceProvider extends ServiceProvider
 
         $this->app->singleton('featurit', function ($app) {
 
+            $featuritUserContextProvider = config('featurit.featurit_user_context_provider');
+
             return (new FeaturitBuilder())
                 ->setTenantIdentifier(config('featurit.tenant_identifier'))
                 ->setApiKey(config('featurit.environment_key'))
                 ->setCacheTtlMinutes(config('featurit.cache_ttl_minutes'))
-                ->setFeaturitUserContextProvider(new ${config('featurit.featurit_user_context_provider')}())
+                ->setFeaturitUserContextProvider(new $featuritUserContextProvider())
                 ->build();
         });
     }
