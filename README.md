@@ -10,7 +10,7 @@ This package aims to simplify the integration of the FeaturIT API in a Laravel p
 
 ### Dependencies
 
-* PHP >= 8.0
+* PHP >= 8.0.2
 * laravel/framework >= 5.1
 * psr/http-client-implementation
 * psr/simple-cache-implementation
@@ -34,7 +34,7 @@ Inside your config/app.php file, in the providers array add:
          * Package Service Providers...
          */
 
-        \Featurit\Client\Laravel\FeaturitServiceProvider::class,
+        Featurit\Client\Laravel\FeaturitServiceProvider::class,
 ```
 
 If you want to publish the default configuration file in order to customize things 
