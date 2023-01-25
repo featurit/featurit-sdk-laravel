@@ -4,29 +4,28 @@ namespace Featurit\Client\Larvel\Tests;
 
 use Featurit\Client\Laravel\Facades\Featurit;
 use Featurit\Client\Laravel\FeaturitServiceProvider;
-use Illuminate\Config\Repository;
-use Illuminate\Foundation\Application;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
+use Orchestra\Testbench\TestCase;
 
 class FeaturitServiceProviderTest extends TestCase
 {
-    public function setUp(): void
-    {
-        if (!class_exists(Application::class)) {
-            $this->markTestSkipped();
-        }
+    use InteractsWithViews;
 
-        parent::setUp();
+    /**
+     * Get package providers.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     * @return array<int, class-string>
+     */
+    protected function getPackageProviders($app)
+    {
+        return [
+            FeaturitServiceProvider::class,
+        ];
     }
 
     public function test_facade_can_be_resolved()
     {
-        $app = $this->setupApplication();
-        $this->setupServiceProvider($app);
-
-        // Mount facades
-        Featurit::setFacadeApplication($app);
-
         $isFeatureFlagActive = Featurit::isActive('TEST_FEATURE');
 
         $this->assertFalse($isFeatureFlagActive);
@@ -34,40 +33,33 @@ class FeaturitServiceProviderTest extends TestCase
 
     public function test_service_name_is_provided()
     {
-        $app = $this->setupApplication();
-        $provider = $this->setupServiceProvider($app);
-
-        $this->assertContains('featurit', $provider->provides());
+        $this->assertArrayHasKey('featurit', $this->app->getBindings());
     }
 
-    /**
-     * @param Application $app
-     *
-     * @return FeaturitServiceProvider
-     */
-    private function setupServiceProvider(Application $app): FeaturitServiceProvider
+    public function test_blade_directives_are_published()
     {
-        // Create and register the provider.
-        $provider = new FeaturitServiceProvider($app);
-        $app->register($provider);
-        $provider->boot();
+        $view = $this->blade("<div>
+            @ifFeatureIsActive('TEST_FEATURE')
+                content
+            @endifFeatureIsActive
+        </div>");
 
-        return $provider;
-    }
+        $view->assertDontSee('content');
 
-    /**
-     * @return Application
-     */
-    protected function setupApplication(): Application
-    {
-        // Create the application such that the config is loaded.
-        $app = new Application();
-        $app->setBasePath(sys_get_temp_dir());
+        $view = $this->blade("<div>
+            @ifFeatureIsNotActive('TEST_FEATURE')
+                content
+            @endifFeatureIsNotActive
+        </div>");
 
-        $configRepository = new Repository();
+        $view->assertSee('content');
 
-        $app->instance('config', $configRepository);
+        $view = $this->blade("<div>
+            @ifFeatureVersionEquals('TEST_FEATURE', 'v1')
+                content
+            @endifFeatureVersionEquals
+        </div>");
 
-        return $app;
+        $view->assertDontSee('content');
     }
 }

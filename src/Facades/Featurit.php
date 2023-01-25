@@ -4,6 +4,10 @@ namespace Featurit\Client\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @method static isActive(string $string)
+ * @method static version(string $string)
+ */
 class Featurit extends Facade
 {
     /**

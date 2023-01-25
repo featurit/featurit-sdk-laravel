@@ -42,7 +42,10 @@ like the default FeaturitUserContextProvider, use the following command:
 
 `php artisan vendor:publish --provider="Featurit\Client\Laravel\FeaturitServiceProvider"`
 
-### Usage
+### Basic Usage
+
+That's how you would use Featurit in one of your controllers, services, or anywhere inside
+your PHP codebase:
 
 ```
 if (Featurit::isActive('YOUR_FEATURE_NAME')) {
@@ -50,10 +53,116 @@ if (Featurit::isActive('YOUR_FEATURE_NAME')) {
 }
 ```
 
+Or in order to check which is the version of your feature:
+
+```
+if (Featurit::version('YOUR_FEATURE_NAME') == 'v1') {
+    your_feature_code_for_v1();
+} else if (Featurit::version('YOUR_FEATURE_NAME') == 'v2') {
+    your_feature_code_for_v2();
+}
+```
+
+### Blade directives
+
+For convenience we provide 3 blade directives which allow to load blade components depending on the Feature Flag values.
+
+Inside your blade template, you can use them like this:
+
+```
+<div>
+    <h2>This code will always be visible</h2>
+
+    @ifFeatureIsActive('MY_ACTIVE_FEATURE')
+        <h2>This will be visible</h2>
+    @endifFeatureIsActive
+
+    @ifFeatureIsNotActive('MY_ACTIVE_FEATURE')
+        <h2>This will NOT be visible</h2>
+    @endifFeatureIsNotActive
+    
+    @ifFeatureVersionEquals('FEATURE_WITH_VERSIONS', 'v1')
+        <h2>Welcome to v1!</h2>
+    @endifFeatureVersionEquals
+    
+    @ifFeatureVersionEquals('FEATURE_WITH_VERSIONS', 'v2')
+        <h2>Welcome to v2!</h2>
+    @endifFeatureVersionEquals
+</div>
+```
+
+### Defining a custom FeaturitUserContextProvider
+
+By default Featurit SDK for Laravel comes with a default FeaturitUserContextProvider in 
+your config/featurit.php file
+
+```
+'featurit_user_context_provider' => Featurit\Client\Laravel\Providers\LaravelFeaturitUserContextProvider::class,
+```
+
+But you can create your own implementation in order to add custom attributes so they can be used
+in the segmentation process.
+
+Let's say that your platform users have a "role" attribute that you use to decide which features 
+you show to each user. In that case you could create an implementation like:
+
+```
+<?php
+
+namespace My\Namespace\Of\Choice;
+
+use Featurit\Client\Modules\Segmentation\DefaultFeaturitUserContext;
+use Featurit\Client\Modules\Segmentation\FeaturitUserContext;
+use Featurit\Client\Modules\Segmentation\FeaturitUserContextProvider;
+use Illuminate\Support\Facades\Auth;
+
+class MyCustomFeaturitUserContextProvider implements FeaturitUserContextProvider
+{
+    public function getUserContext(): FeaturitUserContext
+    {
+        if (! Auth::check()) {
+            return new DefaultFeaturitUserContext(
+                null,
+                null,
+                null,
+                [
+                    'role' => 'Guest',
+                ]
+            );
+        }
+
+        $user = Auth::user();
+
+        $userId = $user->getAuthIdentifier();
+        $sessionId = session()->getId();
+        $ipAddress = request()->ip();
+        
+        $role = $user->role;
+
+        return new DefaultFeaturitUserContext(
+            $userId,
+            $sessionId,
+            $ipAddress,
+            [
+                'role' => $role,
+            ]
+        );
+    }
+}
+```
+
+Then you must replace your implementation in the config/featurit.php file
+
+```
+'featurit_user_context_provider' => My\Namespace\Of\Choice\MyCustomFeaturitUserContextProvider::class,
+```
+
+And that should do it, from now on your segmentation rules will use the role attribute.
+
 ### Authors
 
 FeaturIT
 
 https://www.featurit.com
 
-featurit_tech@gmail.com
+featurit.tech@gmail.com

@@ -3,8 +3,9 @@
 namespace Featurit\Client\Laravel;
 
 use Featurit\Client\FeaturitBuilder;
+use Featurit\Client\Laravel\Facades\Featurit;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use ReflectionClass;
 
 class FeaturitServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,8 @@ class FeaturitServiceProvider extends ServiceProvider
         $this->publishes([
             $this->getConfigPath() => config_path('featurit.php')
         ]);
+
+        $this->registerBladeCustomIfStatementsAndDirectives();
     }
 
     /**
@@ -58,5 +61,23 @@ class FeaturitServiceProvider extends ServiceProvider
     public function getConfigPath(): string
     {
         return __DIR__ . '/../config/featurit.php';
+    }
+
+    /**
+     * @return void
+     */
+    private function registerBladeCustomIfStatementsAndDirectives(): void
+    {
+        Blade::if('ifFeatureIsActive', function (string $feature) {
+            return Featurit::isActive($feature);
+        });
+
+        Blade::if('ifFeatureIsNotActive', function (string $feature) {
+            return !Featurit::isActive($feature);
+        });
+
+        Blade::if('ifFeatureVersionEquals', function (string $feature, string $value) {
+            return Featurit::version($feature) == $value;
+        });
     }
 }
