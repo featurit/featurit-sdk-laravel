@@ -91,9 +91,34 @@ Inside your blade template, you can use them like this:
 </div>
 ```
 
+### Defining your FeaturitUserContext
+
+In order to show different versions of a feature to different users,
+Featurit needs to know about the attributes your user has in a certain context.
+
+You can define the context using the as follows:
+
+```
+$contextData = get_your_user_context_data();
+
+Featurit::setUserContext(
+    new DefaultFeaturitUserContext(
+        $contextData['userId'],
+        $contextData['sessionId'],
+        $contextData['ipAddress'],
+        [
+            'role' => $contextData['role'],
+            ...
+        ]
+    )
+);
+```
+
 ### Defining a custom FeaturitUserContextProvider
 
-By default Featurit SDK for Laravel comes with a default FeaturitUserContextProvider in 
+This is an alternative to using `Featurit::setUserContext(...);`.
+
+By default, Featurit SDK for Laravel comes with a default FeaturitUserContextProvider in 
 your config/featurit.php file
 
 ```

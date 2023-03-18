@@ -4,6 +4,7 @@ namespace Featurit\Client\Larvel\Tests;
 
 use Featurit\Client\Laravel\Facades\Featurit;
 use Featurit\Client\Laravel\FeaturitServiceProvider;
+use Featurit\Client\Modules\Segmentation\DefaultFeaturitUserContext;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Orchestra\Testbench\TestCase;
 
@@ -29,6 +30,30 @@ class FeaturitServiceProviderTest extends TestCase
         $isFeatureFlagActive = Featurit::isActive('TEST_FEATURE');
 
         $this->assertFalse($isFeatureFlagActive);
+    }
+
+    public function test_version_can_be_called()
+    {
+        $featureFlagVersion = Featurit::version('TEST_FEATURE');
+
+        $this->assertEquals('default', $featureFlagVersion);
+    }
+
+    public function test_setUserContext_can_be_called()
+    {
+        Featurit::setUserContext(
+            new DefaultFeaturitUserContext(
+                "1234",
+                "ab12bb8",
+                "192.168.1.1",
+                [
+                    "role" => "ADMIN"
+                ]
+            )
+        );
+
+        $this->assertEquals("1234", Featurit::getUserContext()->getUserId());
+        $this->assertEquals("ADMIN", Featurit::getUserContext()->getCustomAttribute("role"));
     }
 
     public function test_service_name_is_provided()
