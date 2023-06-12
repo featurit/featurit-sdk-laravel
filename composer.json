@@ -42,5 +42,11 @@
     },
     "suggest": {
         "laravel/framework": "To test the Laravel bindings"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sudobat/featurit-sdk-php"
+        }
+    ]
 }
