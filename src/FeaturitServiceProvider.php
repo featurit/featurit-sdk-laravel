@@ -39,7 +39,9 @@ class FeaturitServiceProvider extends ServiceProvider
             return (new FeaturitBuilder())
                 ->setTenantIdentifier(config('featurit.tenant_identifier'))
                 ->setApiKey(config('featurit.environment_key'))
+                ->setIsAnalyticsModuleEnabled(config('featurit.enable_analytics'))
                 ->setCacheTtlMinutes(config('featurit.cache_ttl_minutes'))
+                ->setSendAnalyticsIntervalMinutes(config('featurit.send_analytics_interval_minutes'))
                 ->setFeaturitUserContextProvider(new $featuritUserContextProvider())
                 ->build();
         });
