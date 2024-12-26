@@ -184,6 +184,25 @@ Then you must replace your implementation in the config/featurit.php file
 
 And that should do it, from now on your segmentation rules will use the role attribute.
 
+### Event Tracking
+
+In order to track some event in your application, you can add this once the event has happened:
+
+```
+Featurit::track('EVENT_NAME', [
+    'some_property_name' => 'some_property_value',
+    'another_property_name' => 'another_property_value',
+    ...
+]);
+```
+
+All the events you track in the same request will be accumulated and associated to the current
+FeaturitUserContext, if for some reason you want to send the event immediately, you can do as follows:
+
+```
+Featurit::flush();
+```
+
 ### Authors
 
 FeaturIT
