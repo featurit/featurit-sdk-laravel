@@ -31,7 +31,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-json": "*",
-        "featurit/featurit-sdk-php": "^0.9.0",
+        "featurit/featurit-sdk-php": "^0.9.1",
         "illuminate/support": "^5.1 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0"
     },
     "require-dev": {
