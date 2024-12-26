@@ -40,6 +40,7 @@ class FeaturitServiceProvider extends ServiceProvider
                 ->setTenantIdentifier(config('featurit.tenant_identifier'))
                 ->setApiKey(config('featurit.environment_key'))
                 ->setIsAnalyticsModuleEnabled(config('featurit.enable_analytics'))
+                ->setIsTrackingModuleEnabled(config('featurit.enable_tracking'))
                 ->setCacheTtlMinutes(config('featurit.cache_ttl_minutes'))
                 ->setSendAnalyticsIntervalMinutes(config('featurit.send_analytics_interval_minutes'))
                 ->setFeaturitUserContextProvider(new $featuritUserContextProvider())

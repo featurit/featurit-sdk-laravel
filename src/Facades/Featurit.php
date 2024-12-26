@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static version(string $featureName): string
  * @method static setUserContext(FeaturitUserContext $featuritUserContext): void
  * @method static getUserContext(): FeaturitUserContext
+ * @method static track(string $eventName, array $properties): void
+ * @method static flush(): void
  */
 class Featurit extends Facade
 {
