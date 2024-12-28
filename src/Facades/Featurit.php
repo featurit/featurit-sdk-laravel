@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static setUserContext(FeaturitUserContext $featuritUserContext): void
  * @method static getUserContext(): FeaturitUserContext
  * @method static track(string $eventName, array $properties): void
+ * @method static trackPerson(): void
  * @method static flush(): void
  */
 class Featurit extends Facade

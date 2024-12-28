@@ -196,7 +196,14 @@ Featurit::track('EVENT_NAME', [
 ]);
 ```
 
-All the events you track in the same request will be accumulated and associated to the current
+In order to attack some person profile with your events, you can do so by calling the trackPerson() method 
+before tracking any event.
+
+```
+Featurit::trackPerson();
+```
+
+All the events and people you track in the same request will be accumulated and associated to the current
 FeaturitUserContext, if for some reason you want to send the event immediately, you can do as follows:
 
 ```
